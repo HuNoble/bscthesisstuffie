@@ -44,4 +44,8 @@ public class Applications {
 	public App getApps(int i){
 		return apps.get(i);
 	}
+	
+	public int getAppSize(){
+		return apps.size();
+	}
 }

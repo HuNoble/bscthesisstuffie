@@ -8,8 +8,9 @@ public class AppDetector implements Runnable {
     private SSLDetector ssldetector;
     private DNSDetector dnsdetector;
     private TCPDetector tcpdetector;
-    static Applications apps = new Applications();
-    private HashSet<AppDetectorValueTable> appvalue = new HashSet<AppDetectorValueTable>();
+    private Applications apps = new Applications();
+    private HashSet<TempTCPTable> tempvalue = new HashSet<TempTCPTable>();
+    private boolean def=true;
 
     public AppDetector(SSLDetector s, DNSDetector d, TCPDetector t) {
         ssldetector = s;
@@ -21,23 +22,36 @@ public class AppDetector implements Runnable {
     public void run() {
     	long start_time=System.currentTimeMillis();
         while (true) {
-        	int i=0;
-        	//System.out.println("dns");
-			for (Map<String,String> temp : dnsdetector.DNSList) {
-				if(temp.get("domain").contains(apps.getApps(i).getDns()));
-				i++;
-			   System.out.println(temp.get("domain") + " " + temp.get("address") + " "+apps.getApps(i).getDns());
+        	dnsdetector.dnslock.readLock().lock();
+        	for (Map<String,String> temp : dnsdetector.DNSList) {
+        		for(int i=0;i<apps.getAppSize();i++){
+        			if(temp.get("domain").contains(apps.getApps(i).getDns())){
+        				ucdet(temp.get("address"), apps.getApps(i).getAppId());
+        				def=false;
+        			}
+        		}
+        		if(def==true){
+        			ucdet(temp.get("address"), 0);
+        		}
 			}
-			//System.out.println("ssl");
-			for (Map<String,String> temp : ssldetector.SSLList) {
-			    //System.out.println(temp.get("domain") + " " + temp.get("address"));
-			}
-            if(System.currentTimeMillis()-start_time==250){
+        	dnsdetector.dnslock.readLock().unlock();
+            if(System.currentTimeMillis()-start_time%250==0){
 				
 			}
 			
         }
     }
+    
+	public void ucdet(String address, int ID){
+		tcpdetector.tcplock.readLock().lock();
+		for(Map<String,Object> temp : tcpdetector.TCPList){
+			if(temp.get("a_address").equals(address)){
+				TempTCPTable advt = new TempTCPTable();
+				tempvalue.add(advt);
+			}
+		}
+		tcpdetector.tcplock.readLock().unlock();
+	}
 
     public void start () {
         if (t == null) {
@@ -57,4 +71,6 @@ public class AppDetector implements Runnable {
     public TCPDetector getTcpDetector(){
     	return tcpdetector;
     }
+    
+    
 }

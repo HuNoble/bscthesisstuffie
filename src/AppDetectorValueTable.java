@@ -13,4 +13,5 @@ public class AppDetectorValueTable {
 	double kpi_speed_ref2;
 	int tcp_number;
 	int tcp;
+	
 }
