@@ -1,10 +1,17 @@
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class TCPDetector {
 
     public HashSet<Map<String,Object>> TCPList = new HashSet<>();
     public long idCounter = 1;
+    ReadWriteLock tcplock = new ReentrantReadWriteLock();
+
+    public TCPDetector(ReadWriteLock ilock) {
+        tcplock = ilock;
+    }
 
     public void determineState(StreamModel inputJSON) {
         Map<String,Object> tuples = new HashMap<>();
