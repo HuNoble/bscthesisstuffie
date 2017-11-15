@@ -28,7 +28,7 @@ public class FlowDistributor implements Runnable {
     public void run() {
         try {
             //BufferedReader stdInput = new BufferedReader(new FileReader("/root/IdeaProjects/Nemo/out/production/Nemo/fifo1"));
-            BufferedReader stdInput = new BufferedReader(new FileReader("/root/IdeaProjects/Nemo/out/production/Nemo/asd.txt"));
+            BufferedReader stdInput = new BufferedReader(new FileReader("E:\\Mesi\\asd.txt"));
             String line = null;
             while (true) {
                 if ((line = stdInput.readLine()) != null) {

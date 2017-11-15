@@ -1,3 +1,5 @@
+import java.util.Map;
+
 public class AppDetector implements Runnable {
     private Thread t;
     private SSLDetector ssldetector;
@@ -17,7 +19,14 @@ public class AppDetector implements Runnable {
         while (true) {
             try {
                 Thread.sleep(3000);
-                
+                System.out.println("dns");
+                for (Map<String,String> temp : dnsdetector.DNSList) {
+                    System.out.println(temp.get("domain") + " " + temp.get("address"));
+                }
+                System.out.println("ssl");
+                for (Map<String,String> temp : ssldetector.SSLList) {
+                    System.out.println(temp.get("domain") + " " + temp.get("address"));
+                }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
