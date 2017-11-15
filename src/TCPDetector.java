@@ -28,6 +28,7 @@ public class TCPDetector {
         }
         boolean seen = false;
         Map<String,Object> oldEntry = new HashMap<>();
+        tcplock.readLock().lock();
         for (Map<String,Object> temp : TCPList) {
             if(temp.entrySet().containsAll(tuples.entrySet())) {
                 seen = true;
@@ -35,6 +36,7 @@ public class TCPDetector {
                 break;
             }
         }
+        tcplock.readLock().unlock();
         if(!(seen)) {
             addToTCPTable(inputJSON, tuples);
         } else {
@@ -61,11 +63,14 @@ public class TCPDetector {
             if(!(inputJSON.tcp.http.get("header").equals("")))
                 tuples.put("http_cache",inputJSON.tcp.http.get("header"));
             tuples.put("fin",0);
+            tcplock.writeLock().lock();
             TCPList.add(tuples);
+            tcplock.writeLock().unlock();
         }
     }
 
     public void updateTCPTable(StreamModel inputJSON, Map<String,Object> oldEntry) {
+        tcplock.writeLock().lock();
         TCPList.remove(oldEntry);
         if (Objects.equals(inputJSON.tcp.control_bits.get("syn"), "true"))
             oldEntry.replace("state","established");
@@ -88,10 +93,12 @@ public class TCPDetector {
             else
                 oldEntry.put("http_cache",inputJSON.tcp.http.get("header"));
         TCPList.add(oldEntry);
+        tcplock.writeLock().unlock();
     }
 
     public void garbageCollector() {
         List<Map<String,Object>> markedForDelete = new ArrayList<>();
+        tcplock.readLock().lock();
         for (Map<String,Object> temp : TCPList) {
             Timestamp last_seen = (Timestamp)temp.get("time_last_seen");
             if(System.currentTimeMillis() > last_seen.getTime()+1000*30 && (int)temp.get("fin") == 2) {
@@ -104,14 +111,19 @@ public class TCPDetector {
                 markedForDelete.add(temp);
             }
         }
+        tcplock.readLock().unlock();
+        tcplock.writeLock().lock();
         TCPList.removeAll(markedForDelete);
+        tcplock.writeLock().unlock();
     }
 
     public void printOut() {
         System.out.println("begin");
+        tcplock.readLock().lock();
         for (Map<String,Object> temp : TCPList) {
             System.out.println(temp);
         }
+        tcplock.readLock().unlock();
         System.out.println("end");
     }
 }
