@@ -45,4 +45,5 @@ public class Usecase {
 	public double getKpiSpeedRef2(){
 		return kpiSpeedRef2;
 	}
+	
 }

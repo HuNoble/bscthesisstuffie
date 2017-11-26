@@ -7,7 +7,7 @@ public class TempTCPTable {
 	}
 	
 	public TempTCPTable(String s, int i){
-		ID=i;
+		ID=i+1;
 		address=s;
 	}
 }

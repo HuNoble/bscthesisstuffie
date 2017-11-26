@@ -53,8 +53,11 @@ public class App {
 		return ipRange2;
 	}
 
-	public void getUcs(){
-		
+	public Usecase getUcs(int ID){
+		for(int i=0;i<ucId.size();i++)
+			if(ucId.get(i).getUcId()==ID)
+				return ucId.get(i);
+		return null;
 	}
 
 }

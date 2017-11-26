@@ -48,4 +48,13 @@ public class Applications {
 	public int getAppSize(){
 		return apps.size();
 	}
+	
+	public App getApp(int ID){
+		//kap egy nevet és az alapján visszaad egy komplett appot
+		for(int i=0;i<apps.size();i++){
+			if(apps.get(i).getAppId()==ID)
+				return apps.get(i);
+		}
+		return null;
+	}
 }

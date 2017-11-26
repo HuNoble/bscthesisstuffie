@@ -27,9 +27,12 @@ public class AppDetector implements Runnable {
         while (true) {
         	dnsdetector.dnslock.readLock().lock();
         	for (Map<String,String> temp : dnsdetector.DNSList) {
+        		def=true;
+        		//System.out.println(apps.getApps(0).getDns());
         		for(int i=0;i<apps.getAppSize();i++){
-        			if(temp.get("domain").contains(apps.getApps(i).getDns())){
+        			if(temp.get("domain").contains(apps.getApps(i).getName())){
         				tempvalue.add(new TempTCPTable(temp.get("address"), i));
+        				//System.out.println("siekrültvalamitazonosítani");
         				def=false;
         			}
         		}
@@ -40,6 +43,8 @@ public class AppDetector implements Runnable {
         	dnsdetector.dnslock.readLock().unlock();
         	ucdet(tempvalue);
         	ucd.UCDetection(tempappdetvalue);
+        	tempvalue.clear(); //ne tolja át az összes adatot újra és újra?
+        	tempappdetvalue.clear();
         }
     }
     
@@ -49,9 +54,9 @@ public class AppDetector implements Runnable {
 		for(Map<String,Object> temp : tcpdetector.TCPList){
 			for(Iterator<TempTCPTable> i=ttt.iterator();i.hasNext();){
 				TempTCPTable tmp = i.next();
-				//System.out.println(temp.get("b_address"));
+				System.out.println(temp.get("b_address"));
 				if(temp.get("b_address").equals(tmp.address)){
-					AppDetectorValueTable advt = new AppDetectorValueTable((String)temp.get("a_address"), tmp.ID, (Timestamp)temp.get("time_created"), (Timestamp)temp.get("time_last_seen"), (int)temp.get("data_a_to_b"), (int)temp.get("data_b_to_a"), tcpnumber);
+					AppDetectorValueTable advt = new AppDetectorValueTable((String)temp.get("a_address"), (String)temp.get("b_address"),tmp.ID, (Timestamp)temp.get("time_created"), (Timestamp)temp.get("time_last_seen"), (int)temp.get("data_a_to_b"), (int)temp.get("data_b_to_a"), tcpnumber);
 					tcpnumber++;
 					//System.out.println();
 					tempappdetvalue.add(advt);
