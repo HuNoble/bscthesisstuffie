@@ -5,15 +5,13 @@ import java.util.Iterator;
 
 
 public class UseCaseDetector {
-	//private Thread t;
 	public Applications apps = new Applications();
-	private KPImodul kpi;
 	private HashSet<AppDetectorValueTable> appvalue = new HashSet<AppDetectorValueTable>();
-	long start_time=System.currentTimeMillis();
+	private boolean tcp;
+	private int tcp_number;
+	private int tcp_id;
 	
-	public UseCaseDetector(){}
-	
-	public void UCDetection(HashSet<AppDetectorValueTable> tempappdetvalue){
+	public HashSet<AppDetectorValueTable> UCDetection(HashSet<AppDetectorValueTable> tempappdetvalue){
 		for(Iterator<AppDetectorValueTable> i=tempappdetvalue.iterator();i.hasNext();){
 			AppDetectorValueTable temp= i.next();
 			if(temp.app_id==0){
@@ -22,33 +20,39 @@ public class UseCaseDetector {
 				temp.kpi_speed_ref2=temp.data_a_to_b+temp.data_b_to_a;
 				temp.tcp=1000;
 				appvalue.add(temp);
-				//System.out.println(temp.app_id);
 			}
 			if(temp.app_id==1){
 				temp.uc_id=0;
 				temp.kpi_speed_ref1=temp.data_a_to_b+temp.data_b_to_a;
 				temp.kpi_speed_ref2=temp.data_a_to_b+temp.data_b_to_a;
 				temp.tcp=1000;
-				//System.out.println(temp.data_a_to_b);
 				Wordpress(temp);
 			}
-			
-			//System.out.println("kpiiii");
-			
-			
 		}
-		kpi.KPImodulGenerator(appvalue);
-		appvalue.clear();
+		return appvalue;
 	}
 	
 	public void Wordpress(AppDetectorValueTable temp){
-		if(temp.data_a_to_b>30000){
+		if(tcp&&tcp_number>0){
+			temp.uc_id=tcp_id;
+			temp.kpi_speed_ref1=apps.getApp(temp.app_id).getUcs(tcp_id).getKpiSpeedRef1();
+			temp.kpi_speed_ref2=apps.getApp(temp.app_id).getUcs(tcp_id).getKpiSpeedRef2();
+			temp.tcp=tcp_number;
+			tcp_number--;
+			if(tcp_number==0)
+				tcp=false;
+			appvalue.add(temp);
+		}
+		if(temp.data_b_to_a>20000){
 			if(temp.data_b_to_a>temp.data_a_to_b){
 				temp.uc_id=2;
 				temp.kpi_speed_ref1=apps.getApp(temp.app_id).getUcs(2).getKpiSpeedRef1();
 				temp.kpi_speed_ref2=apps.getApp(temp.app_id).getUcs(2).getKpiSpeedRef2();
 				temp.tcp=apps.getApp(temp.app_id).getUcs(2).getTcp();
 				appvalue.add(temp);
+				tcp_number=temp.tcp;
+				tcp_id=2;
+				tcp=true;
 			}
 			else {
 				boolean Amazon=false;
@@ -60,7 +64,7 @@ public class UseCaseDetector {
 				
 				for(Iterator<AppDetectorValueTable> i=appvalue.iterator();i.hasNext();){
 					AppDetectorValueTable dtmp=i.next();
-					if(dtmp.time_last_seen.getTime()>=System.currentTimeMillis()-2000)
+					if(dtmp.time_last_seen.getTime()>=System.currentTimeMillis()-3000)
 					{
 						if(ipRange(dtmp.b_address, a_iprange1, a_iprange2)){
 							Amazon=true;
@@ -74,6 +78,9 @@ public class UseCaseDetector {
 							temp.kpi_speed_ref2=apps.getApp(temp.app_id).getUcs(1).getKpiSpeedRef2();
 							temp.tcp=apps.getApp(temp.app_id).getUcs(1).getTcp();
 							appvalue.add(temp);
+							tcp_number=temp.tcp;
+							tcp_id=1;
+							tcp=true;
 						}
 					}
 					
@@ -95,7 +102,6 @@ public class UseCaseDetector {
 			
 			return result;
 		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return 0;
@@ -106,23 +112,4 @@ public class UseCaseDetector {
 			 return true;
 		 else return false;
 	}
-	/*
-    public void run() {
-    	long start_time=System.currentTimeMillis();
-        while (true) {
-            if(System.currentTimeMillis()-start_time%250==0){
-				KPImodul kpi = new KPImodul(appvalue);
-			}
-			
-        }
-    }
-	
-    public void start () {
-        if (t == null) {
-            t = new Thread(this);
-            t.start ();
-        }
-    }
-    
-	*/
 }
