@@ -9,7 +9,7 @@ public class App {
 	private String dns;
 	private String ipRange1;
 	private String ipRange2;
-	private ArrayList<Usecase> ucId = new ArrayList<Usecase>();
+	private ArrayList<UseCase> ucId = new ArrayList<UseCase>();
 
 	public App(){
 	}
@@ -23,7 +23,7 @@ public class App {
 			ipRange2=obj.getString("ip_range_to");
 			JSONArray arr = obj.getJSONArray("ucs");
 			for(int i=0;i<arr.length();i++){
-				ucId.add(new Usecase(arr.getJSONObject(i)));
+				ucId.add(new UseCase(arr.getJSONObject(i)));
 			}
 			
 		} catch (JSONException e) {
@@ -53,7 +53,7 @@ public class App {
 		return ipRange2;
 	}
 
-	public Usecase getUcs(int ID){
+	public UseCase getUcs(int ID){
 		for(int i=0;i<ucId.size();i++)
 			if(ucId.get(i).getUcId()==ID)
 				return ucId.get(i);

@@ -5,7 +5,7 @@ import java.util.Iterator;
 
 
 public class UseCaseDetector {
-	public Applications apps = new Applications();
+	private Applications apps = new Applications();
 	private HashSet<AppDetectorValueTable> appvalue = new HashSet<AppDetectorValueTable>();
 	private boolean tcp;
 	private int tcp_number;
@@ -41,7 +41,7 @@ public class UseCaseDetector {
 			tcp_number--;
 			if(tcp_number==0)
 				tcp=false;
-			appvalue.add(temp);
+			//appvalue.add(temp);
 		}
 		if(temp.data_b_to_a>20000){
 			if(temp.data_b_to_a>temp.data_a_to_b){
@@ -49,7 +49,7 @@ public class UseCaseDetector {
 				temp.kpi_speed_ref1=apps.getApp(temp.app_id).getUcs(2).getKpiSpeedRef1();
 				temp.kpi_speed_ref2=apps.getApp(temp.app_id).getUcs(2).getKpiSpeedRef2();
 				temp.tcp=apps.getApp(temp.app_id).getUcs(2).getTcp();
-				appvalue.add(temp);
+				//appvalue.add(temp);
 				tcp_number=temp.tcp;
 				tcp_id=2;
 				tcp=true;
@@ -77,7 +77,7 @@ public class UseCaseDetector {
 							temp.kpi_speed_ref1=apps.getApp(temp.app_id).getUcs(1).getKpiSpeedRef1();
 							temp.kpi_speed_ref2=apps.getApp(temp.app_id).getUcs(1).getKpiSpeedRef2();
 							temp.tcp=apps.getApp(temp.app_id).getUcs(1).getTcp();
-							appvalue.add(temp);
+							//appvalue.add(temp);
 							tcp_number=temp.tcp;
 							tcp_id=1;
 							tcp=true;
@@ -85,9 +85,10 @@ public class UseCaseDetector {
 					}
 					
 				}
-				appvalue.add(temp);
+				//appvalue.add(temp);
 			}
 		}
+		appvalue.add(temp);
 	}
 	
 	public long ipSize(String ipstring){

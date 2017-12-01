@@ -2,7 +2,7 @@
 
 import org.json.*;
 
-public class Usecase {
+public class UseCase {
 	private int ucId;
 	private double data;
 	private int tcp;
@@ -10,10 +10,10 @@ public class Usecase {
 	private double kpiSpeedRef2;
 	
 	
-	public Usecase(){
+	public UseCase(){
 		
 	}
-	public Usecase(JSONObject jobj){
+	public UseCase(JSONObject jobj){
 		try {
 			ucId=jobj.getInt("uc_id");
 			data=jobj.getDouble("data");

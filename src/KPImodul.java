@@ -13,7 +13,6 @@ import java.util.Map;
 import org.json.simple.JSONObject;
 
 public class KPImodul {
-	KPIValueTable kvt=new KPIValueTable();
 	private Map<String, Object> valueT = new HashMap<>();
 	private HashSet<JSONObject> jsonTable = new HashSet<>();
 	public KPImodul(){}
@@ -35,9 +34,9 @@ public class KPImodul {
 		//if(t.time_last_seen.getTime()-t.time_created.getTime()<=0) 
 		long time=t.time_last_seen.getTime()-t.time_created.getTime();
 		double kpi_value;
-		if(time<=0)
+		if(time<=500)
 			kpi_value=(t.data_a_to_b+t.data_b_to_a);
-		else kpi_value=(t.data_a_to_b+t.data_b_to_a)/time*250;
+		else kpi_value=(t.data_a_to_b+t.data_b_to_a)/time*500;
 		valueT.put("a_address", t.a_address);
 		valueT.put("app_id", t.app_id);
 		valueT.put("uc_id", t.uc_id);

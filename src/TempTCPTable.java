@@ -1,7 +1,6 @@
 public class TempTCPTable {
 	public int ID;
 	public String address;
-	
 	public TempTCPTable(){
 		
 	}
