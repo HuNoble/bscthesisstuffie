@@ -10,6 +10,8 @@ public class UseCaseDetector {
 	private boolean tcp;
 	private int tcp_number;
 	private int tcp_id;
+	private boolean spot=false;
+	private int spot_tcp=0;
 	
 	public HashSet<AppDetectorValueTable> UCDetection(HashSet<AppDetectorValueTable> tempappdetvalue){
 		for(Iterator<AppDetectorValueTable> i=tempappdetvalue.iterator();i.hasNext();){
@@ -27,6 +29,31 @@ public class UseCaseDetector {
 				temp.kpi_speed_ref2=temp.data_a_to_b+temp.data_b_to_a;
 				temp.tcp=1000;
 				Wordpress(temp);
+			}
+			if(temp.app_id==2){
+				if(!spot){
+					temp.uc_id=1;
+					temp.kpi_speed_ref1=apps.getApp(2).getUcs(1).getKpiSpeedRef1();
+					temp.kpi_speed_ref2=apps.getApp(2).getUcs(1).getKpiSpeedRef2();
+					temp.tcp=apps.getApp(2).getUcs(1).getTcp();
+					spot_tcp=temp.tcp;
+					spot=true;
+					}
+				else{
+					if(spot_tcp!=0){
+						temp.uc_id=1;
+						temp.kpi_speed_ref1=apps.getApp(2).getUcs(1).getKpiSpeedRef1();
+						temp.kpi_speed_ref2=apps.getApp(2).getUcs(1).getKpiSpeedRef2();
+						temp.tcp=apps.getApp(2).getUcs(1).getTcp();
+						temp.tcp=spot_tcp;
+						spot_tcp--;
+					}else{
+						temp.uc_id=0;
+						temp.tcp=1000;
+						temp.kpi_speed_ref1=temp.data_a_to_b+temp.data_b_to_a;
+						temp.kpi_speed_ref2=temp.data_a_to_b+temp.data_b_to_a;
+					}
+				}
 			}
 		}
 		return appvalue;
@@ -76,12 +103,11 @@ public class UseCaseDetector {
 						if(ipRange(dtmp.b_address, s_iprange1, s_iprange2)){
 							Softlayer=true;
 						}
-						if(Softlayer || Amazon){
+						if(Softlayer||Amazon){
 							temp.uc_id=1;
 							temp.kpi_speed_ref1=apps.getApp(temp.app_id).getUcs(1).getKpiSpeedRef1();
 							temp.kpi_speed_ref2=apps.getApp(temp.app_id).getUcs(1).getKpiSpeedRef2();
 							temp.tcp=apps.getApp(temp.app_id).getUcs(1).getTcp();
-							//appvalue.add(temp);
 							tcp_number=temp.tcp;
 							tcp_id=1;
 							tcp=true;
@@ -89,7 +115,6 @@ public class UseCaseDetector {
 					}
 					
 				}
-				//appvalue.add(temp);
 			}
 		}
 		appvalue.add(temp);
