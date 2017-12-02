@@ -4,15 +4,22 @@
       'app_id': '1',
       'name': 'wordpress',
       'dns': 'http://wordpress.com',
-      'ip_range_from': '192.1.1.1',
-      'ip_range_to': '193.2.2.2',
+      'ip_range_from': '192.0.64.0',
+      'ip_range_to': '192.0.127.255',
       'ucs': [
         {
           'uc_id': '1',
-          'data': '30000',
-          'tcp': '12',
-          'kpi_speed_ref1': '100',
-          'kpi_speed_ref2': '10'
+          'data': '12000',
+          'tcp': '10',
+          'kpi_speed_ref1': '50',
+          'kpi_speed_ref2': '25'
+        },
+        {
+          'uc_id': '2',
+          'data': '25000',
+          'tcp': '8',
+          'kpi_speed_ref1': '800',
+          'kpi_speed_ref2': '2000'
         }
       ]
     }
