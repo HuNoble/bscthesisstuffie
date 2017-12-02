@@ -41,7 +41,6 @@ public class UseCaseDetector {
 			tcp_number--;
 			if(tcp_number==0)
 				tcp=false;
-			//appvalue.add(temp);
 		}
 		if(temp.data_b_to_a>20000){
 			if(temp.data_b_to_a<temp.data_a_to_b){
@@ -49,7 +48,6 @@ public class UseCaseDetector {
 				temp.kpi_speed_ref1=apps.getApp(temp.app_id).getUcs(2).getKpiSpeedRef1();
 				temp.kpi_speed_ref2=apps.getApp(temp.app_id).getUcs(2).getKpiSpeedRef2();
 				temp.tcp=apps.getApp(temp.app_id).getUcs(2).getTcp();
-				//appvalue.add(temp);
 				tcp_number=temp.tcp;
 				tcp_id=2;
 				tcp=true;
@@ -59,6 +57,10 @@ public class UseCaseDetector {
 				boolean Softlayer=false;
 				String a_iprange1="184.72.0.0"; //amazon: helpshift
 				String a_iprange2="184.73.255.255"; // 184.169.128.0; 184.169.255.254, 50.18.0.0, 50.18.255.255
+				String a2_iprange1="184.169.128.0";
+				String a2_iprange2="184.169.255.254";
+				String a3_iprange1="50.18.0.0";
+				String a3_iprange2="50.18.255.255";
 				String s_iprange1="159.122.19.0"; //mixplayer: softlayer
 				String s_iprange2="159.122.19.255";
 
@@ -67,7 +69,8 @@ public class UseCaseDetector {
 					AppDetectorValueTable dtmp=i.next();
 					if(dtmp.time_last_seen.getTime()>=temp.time_created.getTime()-3000)
 					{
-						if(ipRange(dtmp.b_address, a_iprange1, a_iprange2)){
+						if(ipRange(dtmp.b_address, a_iprange1, a_iprange2)||ipRange(dtmp.b_address, a2_iprange1, a2_iprange2)||ipRange(dtmp.b_address, a3_iprange1, a3_iprange2))
+						{
 							Amazon=true;
 						}
 						if(ipRange(dtmp.b_address, s_iprange1, s_iprange2)){
