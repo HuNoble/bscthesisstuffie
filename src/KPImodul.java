@@ -1,3 +1,4 @@
+package app.det;
 
 
 
@@ -24,9 +25,9 @@ public class KPImodul {
 				addElement(tmp);
 			else{
 				i.remove();
-				
 			}
 		}
+		if(jsonTable.size()>0)
 		addJSONOutput(jsonTable);
 	}
 	
