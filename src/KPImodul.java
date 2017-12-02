@@ -48,7 +48,8 @@ public class KPImodul {
 	}
 	
 	public void addJSONOutput(HashSet<JSONObject> appdetval){
-		File f = new File("output.txt");
+		String fname = "output-"+System.currentTimeMillis()+".txt";
+		File f = new File(fname);
 		JSONObject tmp;
 		try {
 			FileOutputStream fos = new FileOutputStream(f);
